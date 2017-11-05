@@ -495,8 +495,23 @@ async function responsiveSizes({ file, args = {} }) {
 }
 
 async function resolutions({ file, args = {} }) {
+
+  const dimensions = imageSize(file.absolutePath)
+  const aspectRatio = dimensions.width / dimensions.height
+
+  if (args.width && args.height) {
+    // the defaults are good
+  } else if (args.width) {
+    args.height = args.width / aspectRatio
+  } else if (args.height) {
+    args.width = args.height * aspectRatio
+  } else {
+    // the defaults are good
+  }
+
   const defaultArgs = {
     width: 400,
+    height: 400 / aspectRatio,
     quality: 50,
     jpegProgressive: true,
     pngCompressionLevel: 9,
@@ -507,6 +522,7 @@ async function resolutions({ file, args = {} }) {
   }
   const options = _.defaults({}, args, defaultArgs)
   options.width = parseInt(options.width, 10)
+  options.height = parseInt(options.height, 10)
 
   // Create sizes for different resolutions — we do 1x, 1.5x, 2x, and 3x.
   const sizes = []
@@ -514,7 +530,6 @@ async function resolutions({ file, args = {} }) {
   sizes.push(options.width * 1.5)
   sizes.push(options.width * 2)
   sizes.push(options.width * 3)
-  const dimensions = imageSize(file.absolutePath)
 
   const filteredSizes = sizes.filter(size => size < dimensions.width)
 

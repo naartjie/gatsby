@@ -188,7 +188,7 @@ module.exports = ({ type, pathPrefix, getNodeAndSavePathDependency }) => {
       args: {
         width: {
           type: GraphQLInt,
-          defaultValue: 400,
+          // defaultValue: 400,
         },
         height: {
           type: GraphQLInt,
